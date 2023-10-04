@@ -20,14 +20,36 @@ training_data = pd.read_csv(dataset_path+"train.csv")
 test_data = pd.read_csv(dataset_path+"test.csv")
 test_data_survived = pd.read_csv(dataset_path+"gender_submission.csv")
 
+# Random guess
+training_data["Survived"].value_counts()/len(training_data["Survived"])*100
+
+
+# Guess based on data analysis
+
 simple_predicted_survival = [0 if i == "male" else 1 for i in training_data["Sex"]]
 
-training_data["Survived"].value_counts()/len(training_data["Survived"])*100
+simple_predicted_survival_2_joint = [0 if (i[1][2] == 3 and i[1][4] == "male") else 1 for i in training_data.iterrows()]
+
+simple_predicted_survival_2_union = [0 if (i[1][2] == 3 or i[1][4] == "male") else 1 for i in training_data.iterrows()]
+
+simple_predicted_survival_3_union = [0 if (i[1][2] == 3 or i[1][4] == "male" or i[1][5] <= 5) else 1 for i in training_data.iterrows()]
 
 print(confusion_matrix(list(training_data["Survived"]),simple_predicted_survival))
 print(classification_report(list(training_data["Survived"]),simple_predicted_survival))
 
+print(classification_report(list(training_data["Survived"]),simple_predicted_survival_2_joint))
 
-np.array(training_data[["Pclass","Sex","Fare","Embarked"]])
+print(classification_report(list(training_data["Survived"]),simple_predicted_survival_2_union))
+
+print(classification_report(list(training_data["Survived"]),simple_predicted_survival_3_union))
+
+training_data["Age"] = training_data["Age"].fillna(round(np.mean(training_data["Age"])))
+
+np.array(training_data[["Pclass","Sex", "Age", "Fare","Embarked"]])
 
 np.array(training_data["Survived"])
+
+# Baseline model
+
+
+# Neural network
